@@ -95,7 +95,7 @@ def kmSortFile(num_clusters, name):
 
     # write the header and # of rows/columns, also write the names of sample
     output.write(header + '\n' + info + '\n')
-    output.write("NAME" + '\t' + "Description" + '\t' + 
+    output.write("Name" + '\t' + "Description" + '\t' + 
                       '\t'.join(sample_names) + '\n')
 
 
