@@ -10,8 +10,8 @@ def kmSortFile(num_clusters, name):
 
     # input a number num_clusters to indicate number of clusters assigned
     # input a name for the basis of cluster files name
-    num_clusters = int(sys.argv[1])
-    name = sys.argv[2]
+    #num_clusters = int(sys.argv[1])
+    #name = sys.argv[2]
 
     # original data with combined clusters
     original = open(name+'.gct')
