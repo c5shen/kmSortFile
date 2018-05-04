@@ -2,11 +2,11 @@ import sys
 import numpy as np
 import pandas as pd
 from scipy import stats
-
+from cuzcatlan import elemental
 
 def kmSortFile(num_clusters, name):
 
-    P_VALUE = 0.001
+    P_VALUE = 0.005
 
     # input a number num_clusters to indicate number of clusters assigned
     # input a name for the basis of cluster files name
@@ -26,7 +26,9 @@ def kmSortFile(num_clusters, name):
     num_rows = int(temp[1].split('\t')[0])
     num_columns = int(temp[1].split('\t')[1])
 
-    # store the samples of the cluster
+    # store the samples of the cluster, and also column labels for pandas
+    # dataframe construction
+    column_labels = temp[2].split('\t')
     sample_names = temp[2].split('\t')[2:]
 
     temp_data = []      # temporarily holds data for future numpy format
@@ -37,12 +39,13 @@ def kmSortFile(num_clusters, name):
     # 1) description
     # 2) probe names
     # 3) data part -> matrix
-    for i in range(3, len(temp)-1):
-        processing = temp[i].split('\t')
-        temp_data.append(list(processing[2:]))
-        description.append(processing[1])
-        probe_names.append(processing[0])
-        del processing
+    for i in range(3, len(temp)):
+        if temp[i] != '':
+            processing = temp[i].split('\t')
+            temp_data.append(list(processing[2:]))
+            description.append(processing[1])
+            probe_names.append(processing[0])
+            del processing
     matrix = np.array(temp_data, dtype=float)
 
     # get clusters info (num of rows, starting location in matrix)
@@ -91,12 +94,12 @@ def kmSortFile(num_clusters, name):
 
     # output to a file named after the original name, with 'sorted' tagged
     # behind
-    output = open(name + '-sorted.gct', 'w')
+#    output = open(name + '-sorted.gct', 'w')
 
     # write the header and # of rows/columns, also write the names of sample
-    output.write(header + '\n' + info + '\n')
-    output.write("Name" + '\t' + "Description" + '\t' + 
-                      '\t'.join(sample_names) + '\n')
+#    output.write(header + '\n' + info + '\n')
+#    output.write("Name" + '\t' + "Description" + '\t' + 
+#                      '\t'.join(sample_names) + '\n')
 
 
     # construct a int array containing length of num of rows, start writing in
@@ -107,21 +110,39 @@ def kmSortFile(num_clusters, name):
 
     # iterate through the whole dictionary for each cluster, so we can print
     # out the corresponding differently expressed genes in cluster order
-    for k in range(num_clusters):
-        for key,value in diff_expression.items():
-            if value[0] == k:
-                output.write(probe_names[key] + '\t' + description[key] + '\t')
-                for i in range(len(matrix[key])):
-                    output.write(str(matrix[key][i]) + '\t')
-                output.write('\n')
-                rest_rows.remove(key)   # remove the added ones from rest_rows
+#    for k in range(num_clusters):
+#        for key,value in diff_expression.items():
+#            if value[0] == k:
+#                output.write(probe_names[key] + '\t' + description[key] + '\t')
+#                for i in range(len(matrix[key])):
+#                    output.write(str(matrix[key][i]) + '\t')
+#                output.write('\n')
+#                rest_rows.remove(key)   # remove the added ones from rest_rows
 
-    for i in range(len(rest_rows)):
-        output.write(probe_names[rest_rows[i]] + '\t' + 
-                         description[rest_rows[i]] + '\t')
-        for j in range(len(matrix[rest_rows[i]])):
-            output.write(str(matrix[rest_rows[i]][j]) + '\t')
-        output.write('\n')
+#    for i in range(len(rest_rows)):
+#        output.write(probe_names[rest_rows[i]] + '\t' + 
+#                         description[rest_rows[i]] + '\t')
+#        for j in range(len(matrix[rest_rows[i]])):
+#            output.write(str(matrix[rest_rows[i]][j]) + '\t')
+#        output.write('\n')
         
+#    output.close()
 
-    output.close()
+    df_to_process = pd.read_table(name+'.gct', skiprows=2)
+    new_order = []
+    # rearrange the rows to pass the matrix for an np ndarray, then construct
+    # pandas DataFrame
+    for key, value in sorted(diff_expression.items(), key=lambda item :(item[1][0],item[0]) ):
+        #print("%s: %s" % (key,value))
+        rest_rows.remove(key)
+        new_order.append(key)
+    for item in rest_rows:
+        new_order.append(item)
+
+    #print(df_to_process.index.values)
+    df_to_process = df_to_process.reindex(new_order)
+    #print(df_to_process)
+
+    elemental.df2gct(df_to_process, 2, True, name+'-sorted.gct', False)
+
+kmSortFile(int(sys.argv[1]), sys.argv[2])
