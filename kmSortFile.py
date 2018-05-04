@@ -145,4 +145,4 @@ def kmSortFile(num_clusters, name):
 
     elemental.df2gct(df_to_process, 2, True, name+'-sorted.gct', False)
 
-kmSortFile(int(sys.argv[1]), sys.argv[2])
+#kmSortFile(int(sys.argv[1]), sys.argv[2])
