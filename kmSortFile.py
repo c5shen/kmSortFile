@@ -47,7 +47,7 @@ def expression_t_test(num_rows, info, data, p):
 
 
 # main function for sorting genes based on differentially expressed level
-def kmSortFile(num_clusters, name, P_VALUE=0.005, report_only_diff_expr_genes=1):
+def kmSortFile(name, num_clusters, P_VALUE=0.005, report_only_diff_expr_genes=1):
 
     # original data with combined clusters
     original = open(name+'.gct')
