@@ -4,9 +4,8 @@ import pandas as pd
 from scipy import stats
 from cuzcatlan import elemental
 
-def kmSortFile(num_clusters, name):
+def kmSortFile(num_clusters, name, P_VALUE=0.005, report_only_diff_expr_genes=1):
 
-    P_VALUE = 0.005
 
     # input a number num_clusters to indicate number of clusters assigned
     # input a name for the basis of cluster files name
@@ -21,30 +20,21 @@ def kmSortFile(num_clusters, name):
         clusters.append(open(name + '-' + str(i) + '.gct'))
 
     temp = original.read().split('\n')
-    header = temp[0]
-    info = temp[1]
     num_rows = int(temp[1].split('\t')[0])
     num_columns = int(temp[1].split('\t')[1])
 
-    # store the samples of the cluster, and also column labels for pandas
-    # dataframe construction
-    column_labels = temp[2].split('\t')
-    sample_names = temp[2].split('\t')[2:]
-
     temp_data = []      # temporarily holds data for future numpy format
-    description = []    # stores descriptions for each probe
-    probe_names = []    # stores names of each probe
+    #description = []    # stores descriptions for each probe
+    #probe_names = []    # stores names of each probe
 
     # pull down the data to different chunks.
-    # 1) description
-    # 2) probe names
-    # 3) data part -> matrix
+    # 1) data part -> matrix
     for i in range(3, len(temp)):
         if temp[i] != '':
             processing = temp[i].split('\t')
             temp_data.append(list(processing[2:]))
-            description.append(processing[1])
-            probe_names.append(processing[0])
+            #description.append(processing[1])
+            #probe_names.append(processing[0])
             del processing
     matrix = np.array(temp_data, dtype=float)
 
@@ -146,7 +136,9 @@ def kmSortFile(num_clusters, name):
     #df_to_process.drop('',axis=1)
     #print(df_to_process.head(certainty))
 
-    elemental.df2gct(df_to_process.head(certainty), 2, True, name+'-sorted.gct', False)
-    #elemental.df2gct(df_to_process.head(certainty), 1, True, 'output.gct', False)
+    if report_only_diff_expr_genes:
+        elemental.df2gct(df_to_process.head(certainty), 1, True, name+'-sorted.gct', False)
+    else:
+        elemental.df2gct(df_to_process, 1, True, name+'-sorted.gct', False)
 
-#kmSortFile(int(sys.argv[1]), sys.argv[2])
+kmSortFile(int(sys.argv[1]), sys.argv[2], float(sys.argv[3]), int(sys.argv[4]))
