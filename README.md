@@ -10,12 +10,12 @@ k-means clustering sorting to heatmap display
 ## Command
 ### Developed using Python 3.6.5
 ```bash
-python3 kmSortFile.py [number of clusters] [integrated output file name (no extension)]
+python3 kmSortFile.py [integrated output file name (no extension)] [number of clusters] [p value for t test, default: 0.005] [whether only output differentially expressed genes, default: 1]
 ```
 
 **Example (files provided in the repository)**
 ```bash
-python kmSortFile.py 4 all_aml_test.preprocessed_KMcluster_output
+python3 kmSortFile.py all_aml_test.preprocessed_KMcluster_output 4 0.005 1
 ```
 
 **Output:**
