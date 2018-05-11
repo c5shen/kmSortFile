@@ -1,6 +1,9 @@
 import sys
 import numpy as np
 import pandas as pd
+import genepattern
+import gp
+from gp.data import _obtain_io
 from scipy import stats
 from cuzcatlan import elemental
 
@@ -51,6 +54,20 @@ def kmSortFile(name, num_clusters, P_VALUE=0.005, report_only_diff_expr_genes=1)
 
     # original data with combined clusters
     original = open(name+'.gct')
+
+    # read from url from genepattern job, provided by Edwin
+    jobNum = name.split("/")[-2]
+    input_file_Name = gene_pattern_url.split("/")[-1]
+
+    # get GenePattern input job object and my username
+    lastJob = gp.GPJob(genepattern.get_session(0),jobNum)
+    myUserId = genepattern.get_session(0).username
+
+    # Handle all various initialization types and get an IO object
+    file_io = _obtain_io(lastJob.get_file(input_file_Name))
+
+    # read in the .gct format
+    data = pd.read_table(file_io, skiprows=2)
 
     clusters = []
     for i in range(1,num_clusters+1):
