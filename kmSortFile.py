@@ -6,6 +6,7 @@ import gp
 from gp.data import _obtain_io, _apply_backwards_compatibility
 from scipy import stats
 from cuzcatlan import elemental
+from ccalnoir import get_file_from_server
 
 # t test for detecting differentially expressed genes
 def expression_t_test(num_rows, info, data, p):
@@ -61,7 +62,7 @@ def kmSortFile(name, num_clusters, P_VALUE=0.005, report_only_diff_expr_genes=1)
 
     # get GenePattern input job object and my username
     lastJob = gp.GPJob(genepattern.get_session(0),jobNum)
-    myUserId = genepattern.get_session(0).username
+    #myUserId = genepattern.get_session(0).username
 
     # Handle all various initialization types and get an IO object
     file_io = _obtain_io(lastJob.get_file(input_file_Name))
@@ -134,6 +135,5 @@ def kmSortFile(name, num_clusters, P_VALUE=0.005, report_only_diff_expr_genes=1)
         elemental.df2gct(df_to_process, 1, True, name+'-sorted.gct', False)
 
 # test line for individually calling the .py file with command line inputs
-kmSortFile("https://genepattern.broadinstitute.org/gp/jobResults/1678603/all_aml_test.preprocessed_KMcluster_output.gct",
-        int(sys.argv[2]), float(sys.argv[3]), int(sys.argv[4]))
+#kmSortFile(sys.argv[1], int(sys.argv[2]), float(sys.argv[3]), int(sys.argv[4]))
 
