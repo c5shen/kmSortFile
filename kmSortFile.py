@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 import genepattern
 import gp
-from gp.data import _obtain_io
+from gp.data import _obtain_io, _apply_backwards_compatibility
 from scipy import stats
 from cuzcatlan import elemental
 
@@ -53,11 +53,11 @@ def expression_t_test(num_rows, info, data, p):
 def kmSortFile(name, num_clusters, P_VALUE=0.005, report_only_diff_expr_genes=1):
 
     # original data with combined clusters
-    original = open(name+'.gct')
+    #original = open(name+'.gct')
 
     # read from url from genepattern job, provided by Edwin
     jobNum = name.split("/")[-2]
-    input_file_Name = gene_pattern_url.split("/")[-1]
+    input_file_Name = name.split("/")[-1]
 
     # get GenePattern input job object and my username
     lastJob = gp.GPJob(genepattern.get_session(0),jobNum)
@@ -68,6 +68,8 @@ def kmSortFile(name, num_clusters, P_VALUE=0.005, report_only_diff_expr_genes=1)
 
     # read in the .gct format
     data = pd.read_table(file_io, skiprows=2)
+
+    exit()
 
     clusters = []
     for i in range(1,num_clusters+1):
@@ -132,4 +134,6 @@ def kmSortFile(name, num_clusters, P_VALUE=0.005, report_only_diff_expr_genes=1)
         elemental.df2gct(df_to_process, 1, True, name+'-sorted.gct', False)
 
 # test line for individually calling the .py file with command line inputs
-#kmSortFile(int(sys.argv[1]), sys.argv[2], float(sys.argv[3]), int(sys.argv[4]))
+kmSortFile("https://genepattern.broadinstitute.org/gp/jobResults/1678603/all_aml_test.preprocessed_KMcluster_output.gct",
+        int(sys.argv[2]), float(sys.argv[3]), int(sys.argv[4]))
+
