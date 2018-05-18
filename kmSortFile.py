@@ -6,7 +6,7 @@ import gp
 from gp.data import _obtain_io, _apply_backwards_compatibility
 from scipy import stats
 from cuzcatlan import elemental
-from ccalnoir import get_file_from_server
+from ccalnoir.elemental import get_file_from_server
 
 # t test for detecting differentially expressed genes
 def expression_t_test(num_rows, info, data, p):
