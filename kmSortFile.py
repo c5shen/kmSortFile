@@ -109,8 +109,8 @@ def kmSortFile(data, num_clusters, P_VALUE=0.005, report_only_diff_expr_genes=1)
         clusters_info.append((starting_loc, temp_num))
         starting_loc += temp_num
     
-    print(clusters_info)
-    return
+    #print(clusters_info)
+    #return
 
     diff_expression = expression_t_test(num_rows, clusters_info, matrix, P_VALUE)
 
