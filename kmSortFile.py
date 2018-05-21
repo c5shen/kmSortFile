@@ -53,7 +53,7 @@ def expression_t_test(num_rows, info, data, p):
 
 
 # main function for sorting genes based on differentially expressed level
-def kmSortFile(name, num_clusters, P_VALUE=0.005, report_only_diff_expr_genes=1):
+def kmSortFile(data, num_clusters, P_VALUE=0.005, report_only_diff_expr_genes=1):
 
     # original data with combined clusters
     #original = open(name+'.gct')
@@ -76,41 +76,41 @@ def kmSortFile(name, num_clusters, P_VALUE=0.005, report_only_diff_expr_genes=1)
 
 #################
 
-    # use the imported function to pull down data from url using pandas
-    original = ccalnoir.get_file_from_server(name, 'GCT')
-    print(original)
+    original = data[0]
 
-    exit()
-
-    clusters = []
-    for i in range(1,num_clusters+1):
-        with open(name+'-'+str(i)+'.gct') as myfile:
-            head = [next(myfile) for x in range(2)]
-            clusters.append(head)
+    #clusters = []
+    #for i in range(1,num_clusters+1):
+        #with open(name+'-'+str(i)+'.gct') as myfile:
+            #head = [next(myfile) for x in range(2)]
+            #clusters.append(head)
         #clusters.append(open(name + '-' + str(i) + '.gct'))
 
-    temp = original.read().split('\n')
-    num_rows = int(temp[1].split('\t')[0])
-    num_columns = int(temp[1].split('\t')[1])
+    #temp = original.read().split('\n')
+    num_rows = original.shape[0]
+    num_columns = original.shape[1]-2
 
-    temp_data = []      # temporarily holds data for future numpy format
+    #temp_data = []      # temporarily holds data for future numpy format
 
     # pull down the data to different chunks.
     # 1) data part -> matrix
-    for i in range(3, len(temp)):
-        if temp[i] != '':
-            processing = temp[i].split('\t')
-            temp_data.append(list(processing[2:]))
-            del processing
-    matrix = np.array(temp_data, dtype=float)
+    #for i in range(3, len(temp)):
+    #    if temp[i] != '':
+    #        processing = temp[i].split('\t')
+    #        temp_data.append(list(processing[2:]))
+    #        del processing
+    #matrix = np.array(temp_data, dtype=float)
+    matrix = original.values[:,2:]
 
     # get clusters info (starting location and num of items in each cluster)
     clusters_info = []
     starting_loc = 0
-    for i in range(num_clusters):
-        temp_num = int(clusters[i][1].split('\t')[1])
+    for i in range(1, num_clusters+1):
+        temp_num = data[i].shape[1]-2
         clusters_info.append((starting_loc, temp_num))
         starting_loc += temp_num
+    
+    print(clusters_info)
+    return
 
     diff_expression = expression_t_test(num_rows, clusters_info, matrix, P_VALUE)
 
@@ -120,7 +120,7 @@ def kmSortFile(name, num_clusters, P_VALUE=0.005, report_only_diff_expr_genes=1)
     # IN ORDER to the file
     rest_rows = [x for x in range(num_rows)]
 
-    df_to_process = pd.read_table(name+'.gct', skiprows=2)
+    df_to_process = original
     new_order = []
 
     # rearrange the rows to pass the matrix for an np ndarray, then construct
