@@ -6,8 +6,8 @@ import gp
 from gp.data import _obtain_io, _apply_backwards_compatibility, GCT
 from scipy import stats
 from cuzcatlan import elemental
-#import ccalnoir
-from ccalnoir import get_file_from_server
+import ccalnoir
+#from ccalnoir import get_file_from_server
 
 
 # t test for detecting differentially expressed genes
@@ -77,7 +77,7 @@ def kmSortFile(name, num_clusters, P_VALUE=0.005, report_only_diff_expr_genes=1)
 #################
 
     # use the imported function to pull down data from url using pandas
-    original = get_file_from_server(name, 'GCT')
+    original = ccalnoir.get_file_from_server(name, 'GCT')
     print(original)
 
     exit()
