@@ -3,10 +3,10 @@ import numpy as np
 import pandas as pd
 import genepattern
 import gp
-from gp.data import _obtain_io, _apply_backwards_compatibility, GCT
+from gp.data import _obtain_io, _apply_backwards_compatibility
 from scipy import stats
 from cuzcatlan import elemental
-import ccalnoir
+#import ccalnoir
 #from ccalnoir import get_file_from_server
 
 
