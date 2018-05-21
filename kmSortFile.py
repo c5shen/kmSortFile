@@ -99,7 +99,7 @@ def kmSortFile(data, num_clusters, P_VALUE=0.005, report_only_diff_expr_genes=1)
     #        temp_data.append(list(processing[2:]))
     #        del processing
     #matrix = np.array(temp_data, dtype=float)
-    matrix = original.values[:,2:]
+    matrix = original.values[:,2:].astype('float32')
 
     # get clusters info (starting location and num of items in each cluster)
     clusters_info = []
