@@ -137,6 +137,8 @@ def kmSortFile(name, data, num_clusters, P_VALUE=0.005, report_only_diff_expr_ge
     # to 'Name' column
     df_to_process = df_to_process.reindex(new_order)
     df_to_process.set_index('Name',inplace=True)
+    name = name.split("/")[-1]
+    name = name[0:len(name)-4]
 
     # report whole genes or only the differentially expressed ones
     if report_only_diff_expr_genes:
